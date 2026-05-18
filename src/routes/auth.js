@@ -1,30 +1,26 @@
-// Auth routes
-const express = require('express');
-const router = express.Router();
-const authController = require('../controllers/auth.controller');
-const { validate } = require('../middleware/validate');
-const { registerSchema, loginSchema } = require('../validators/schemas');
-const { apiLimiter, authLimiter } = require('../middleware/rateLimiter');
-const upload = require('../middleware/upload');
+import express from 'express';
+import { register, login, refreshToken } from '../controllers/auth.controller.js';
+import { validate } from '../middleware/validate.js';
+import { registerSchema, loginSchema } from '../validators/schemas.js';
+import { apiLimiter, authLimiter } from '../middleware/rateLimiter.js';
+import authenticate from '../middleware/authenticate.js';
+import upload from '../middleware/upload.js';
 
-// Apply general API limiter to all auth routes
+const router = express.Router();
+
 router.use(apiLimiter);
 
-// Stricter limiter for auth endpoints
-router.post('/register', authLimiter, validate(registerSchema), authController.register);
-router.post('/login', authLimiter, validate(loginSchema), authController.login);
-router.post('/refresh-token', authController.refreshToken);
-// Profile picture upload (protected route)
-router.post('/upload-profile-pic', authController.refreshToken, upload, (req, res) => {
-// Note: In a real app, we'd protect this with authenticate middleware
-// For now, using refreshToken as placeholder - should be replaced with authenticate
+router.post('/register', authLimiter, validate(registerSchema), register);
+router.post('/login', authLimiter, validate(loginSchema), login);
+router.post('/refresh-token', refreshToken);
+router.post('/upload-profile-pic', authenticate, upload, (req, res) => {
   res.status(200).json({
     status: 'success',
     message: 'Profile picture uploaded successfully',
     data: {
-      filePath: req.file.path
-    }
+      filePath: req.file.path,
+    },
   });
 });
 
-module.exports = router;
+export default router;

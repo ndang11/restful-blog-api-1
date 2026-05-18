@@ -1,31 +1,25 @@
-// Posts routes
-const express = require('express');
+import express from 'express';
+import {
+  getAllPosts,
+  getPostById,
+  createPost,
+  updatePost,
+  deletePost,
+} from '../controllers/post.controller.js';
+import authenticate from '../middleware/authenticate.js';
+import { validate } from '../middleware/validate.js';
+import { postSchema, updatePostSchema } from '../validators/schemas.js';
+import { apiLimiter } from '../middleware/rateLimiter.js';
+
 const router = express.Router();
-const postController = require('../controllers/post.controller');
-const { authenticate } = require('../middleware/authenticate');
-const { validate } = require('../middleware/validate');
-const { postSchema, updatePostSchema } = require('../validators/schemas');
-const { apiLimiter } = require('../middleware/rateLimiter');
 
-// Apply general API limiter
 router.use(apiLimiter);
-
-// Protect all post routes with authentication
 router.use(authenticate);
 
-// Get all posts (with optional filtering and pagination)
-router.get('/', postController.getAllPosts);
+router.get('/', getAllPosts);
+router.get('/:id', getPostById);
+router.post('/', validate(postSchema), createPost);
+router.patch('/:id', validate(updatePostSchema), updatePost);
+router.delete('/:id', deletePost);
 
-// Get a single post by ID
-router.get('/:id', postController.getPostById);
-
-// Create a new post
-router.post('/', validate(postSchema), postController.createPost);
-
-// Update a post
-router.patch('/:id', validate(updatePostSchema), postController.updatePost);
-
-// Delete a post
-router.delete('/:id', postController.deletePost);
-
-module.exports = router;
+export default router;
