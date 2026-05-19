@@ -93,6 +93,7 @@ Start the server:
 
 ```bash
 npm start
+npm run dev
 ```
 
 The API will be available at `http://localhost:5000`.

@@ -1,7 +1,5 @@
-// Post model - parameterized DB queries
 const { pool } = require('../config/db');
 
-// Get all posts with optional filtering
 const getAllPosts = async (filters = {}) => {
   let query = 'SELECT p.*, u.username as author_name FROM posts p JOIN users u ON p.author_id = u.id';
   const params = [];

@@ -6,5 +6,3 @@ DROP TABLE IF EXISTS refresh_tokens;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS posts;
 DROP TABLE IF EXISTS users;
-
--- Optionally, you can also drop any custom types or extensions here if you have any.

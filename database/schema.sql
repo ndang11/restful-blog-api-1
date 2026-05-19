@@ -1,4 +1,3 @@
--- Database schema for the blog API
 
 -- Drop tables if they exist (for clean setup)
 DROP TABLE IF EXISTS refresh_tokens;
