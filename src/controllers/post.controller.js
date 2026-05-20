@@ -36,12 +36,12 @@ const getPostById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const result = await pool.query(
-      'SELECT p.*, u.username as author_name FROM posts p JOIN users u ON p.author_id = u.id WHERE p.id = $1',
-      [id]
+      'SELECT p.*, u.username as author_name FROM posts p JOIN users u ON p.author_id = u.id WHERE p.id = $1 AND p.author_id = $2',
+      [id, req.user.id]
     );
 
     if (result.rows.length === 0) {
-      throw new AppError('Post not found', 404);
+      throw new AppError('Post not found or unauthorized', 404);
     }
 
     res.status(200).json({
@@ -80,14 +80,17 @@ const updatePost = async (req, res, next) => {
     const { id } = req.params;
     const { title, content } = req.body;
 
-    const checkResult = await pool.query('SELECT * FROM posts WHERE id = $1', [id]);
+    const checkResult = await pool.query(
+      'SELECT * FROM posts WHERE id = $1 AND author_id = $2',
+      [id, req.user.id]
+    );
     if (checkResult.rows.length === 0) {
-      throw new AppError('Post not found', 404);
+      throw new AppError('Post not found or unauthorized', 404);
     }
 
     const result = await pool.query(
-      'UPDATE posts SET title = $1, content = $2, updated_at = NOW() WHERE id = $3 RETURNING *',
-      [title, content, id]
+      'UPDATE posts SET title = $1, content = $2, updated_at = NOW() WHERE id = $3 AND author_id = $4 RETURNING *',
+      [title, content, id, req.user.id]
     );
 
     res.status(200).json({
@@ -105,12 +108,15 @@ const deletePost = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const checkResult = await pool.query('SELECT * FROM posts WHERE id = $1', [id]);
+    const checkResult = await pool.query(
+      'SELECT * FROM posts WHERE id = $1 AND author_id = $2',
+      [id, req.user.id]
+    );
     if (checkResult.rows.length === 0) {
-      throw new AppError('Post not found', 404);
+      throw new AppError('Post not found or unauthorized', 404);
     }
 
-    await pool.query('DELETE FROM posts WHERE id = $1', [id]);
+    await pool.query('DELETE FROM posts WHERE id = $1 AND author_id = $2', [id, req.user.id]);
 
     res.status(204).send();
   } catch (err) {

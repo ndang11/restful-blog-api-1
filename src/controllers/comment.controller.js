@@ -58,14 +58,17 @@ const updateComment = async (req, res, next) => {
     const { id } = req.params;
     const { content } = req.body;
 
-    const checkResult = await pool.query('SELECT * FROM comments WHERE id = $1', [id]);
+    const checkResult = await pool.query(
+      'SELECT * FROM comments WHERE id = $1 AND author_id = $2',
+      [id, req.user.id]
+    );
     if (checkResult.rows.length === 0) {
-      throw new AppError('Comment not found', 404);
+      throw new AppError('Comment not found or unauthorized', 404);
     }
 
     const result = await pool.query(
-      'UPDATE comments SET content = $1, updated_at = NOW() WHERE id = $2 RETURNING *',
-      [content, id]
+      'UPDATE comments SET content = $1, updated_at = NOW() WHERE id = $2 AND author_id = $3 RETURNING *',
+      [content, id, req.user.id]
     );
 
     res.status(200).json({
@@ -83,12 +86,15 @@ const deleteComment = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const checkResult = await pool.query('SELECT * FROM comments WHERE id = $1', [id]);
+    const checkResult = await pool.query(
+      'SELECT * FROM comments WHERE id = $1 AND author_id = $2',
+      [id, req.user.id]
+    );
     if (checkResult.rows.length === 0) {
-      throw new AppError('Comment not found', 404);
+      throw new AppError('Comment not found or unauthorized', 404);
     }
 
-    await pool.query('DELETE FROM comments WHERE id = $1', [id]);
+    await pool.query('DELETE FROM comments WHERE id = $1 AND author_id = $2', [id, req.user.id]);
 
     res.status(204).send();
   } catch (err) {

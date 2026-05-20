@@ -1,7 +1,5 @@
-// Comment model - parameterized DB queries
-const { pool } = require('../config/db');
+import pool from '../config/db.js';
 
-// Get all comments for a post
 const getCommentsByPostId = async (postId) => {
   const result = await pool.query(
     'SELECT c.*, u.username as author_name FROM comments c JOIN users u ON c.author_id = u.id WHERE c.post_id = $1 ORDER BY c.created_at ASC',
@@ -10,7 +8,6 @@ const getCommentsByPostId = async (postId) => {
   return result.rows;
 };
 
-// Get comment by id
 const getCommentById = async (id) => {
   const result = await pool.query('SELECT * FROM comments WHERE id = $1', [id]);
   return result.rows[0];
@@ -39,10 +36,10 @@ const deleteComment = async (id) => {
   await pool.query('DELETE FROM comments WHERE id = $1', [id]);
 };
 
-module.exports = {
+export {
   getCommentsByPostId,
   getCommentById,
   createComment,
   updateComment,
-  deleteComment
+  deleteComment,
 };
