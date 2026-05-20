@@ -1,6 +1,8 @@
 import { Pool } from 'pg';
 import fs from 'node:fs';
 import path from 'node:path';
+export { runSql, runSqlFile };
+
 
 const runSql = async (sql, connectionString) => {
   const pool = new Pool({ connectionString });
