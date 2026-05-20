@@ -1,5 +1,5 @@
-const { pool } = require('../config/db');
-const bcrypt = require('bcryptjs');
+import pool from '../config/db.js';
+import bcrypt from 'bcryptjs';
 
 const getUserByEmail = async (email) => {
   const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
@@ -33,10 +33,10 @@ const deleteUser = async (id) => {
   await pool.query('DELETE FROM users WHERE id = $1', [id]);
 };
 
-module.exports = {
+export {
   getUserByEmail,
   getUserById,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
 };

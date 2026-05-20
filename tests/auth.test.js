@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../src/app.js';
-import pool from '../src/config/db.js';
+import { pool } from '../src/config/db.js';
 import bcrypt from 'bcryptjs';
 
 describe('Auth Endpoints', () => {

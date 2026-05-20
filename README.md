@@ -60,7 +60,7 @@ Clone the repository:
 
 ```bash
 git clone git@github.com:ndang11/restful-blog-api-1.git
-cd resful-blog-api-1
+cd restful-blog-api-1
 ```
 
 Create a `.env` file based on `.env.example`:
@@ -68,7 +68,7 @@ Create a `.env` file based on `.env.example`:
 Edit `.env` with your PostgreSQL credentials:
 
 ```
-PORT=5000
+PORT=3000
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=your_username
@@ -92,9 +92,10 @@ npm run setup
 Start the server:
 
 ```bash
-npm start
 npm run dev
 ```
+# Production mode
+ npm start
 
 The API will be available at `http://localhost:5000`.
 
