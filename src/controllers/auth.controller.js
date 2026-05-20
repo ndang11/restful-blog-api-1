@@ -71,8 +71,37 @@ const login = async (req, res, next) => {
   }
 };
 
-const refreshToken = (req, res) => {
-  res.status(200).json({ status: 'success', message: 'Refresh token endpoint' });
+const refreshToken = async (req, res) => {
+  const { refreshToken: token } = req.body;
+
+  if (!token) {
+    return res.status(401).json({ status: 'fail', message: 'Refresh token required' });
+  }
+
+  try {
+    const payload = jwt.verify(token, env.jwtSecretRefresh || env.jwtSecret);
+    const userId = payload.id;
+
+    // Check if user exists
+    const userResult = await pool.query('SELECT * FROM users WHERE id = $1', [userId]);
+    if (userResult.rows.length === 0) {
+      return res.status(401).json({ status: 'fail', message: 'User not found' });
+    }
+
+    const user = userResult.rows[0];
+
+    // Generate new access token
+    const accessToken = generateAccessToken(user);
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        accessToken,
+      },
+    });
+  } catch (err) {
+    res.status(401).json({ status: 'fail', message: 'Invalid or expired refresh token' });
+  }
 };
 
 export { register, login, refreshToken };

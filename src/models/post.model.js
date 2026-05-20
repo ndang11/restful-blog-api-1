@@ -1,11 +1,10 @@
-const { pool } = require('../config/db');
+import pool from '../config/db.js';
 
 const getAllPosts = async (filters = {}) => {
   let query = 'SELECT p.*, u.username as author_name FROM posts p JOIN users u ON p.author_id = u.id';
   const params = [];
   const whereClauses = [];
   
-  // Filter by author
   if (filters.authorId) {
     whereClauses.push(`p.author_id = $${params.length + 1}`);
     params.push(filters.authorId);
@@ -17,7 +16,6 @@ const getAllPosts = async (filters = {}) => {
   
   query += ' ORDER BY p.created_at DESC';
   
-  // Pagination
   const limit = filters.limit || 10;
   const offset = filters.offset || 0;
   query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
@@ -27,7 +25,6 @@ const getAllPosts = async (filters = {}) => {
   return result.rows;
 };
 
-// Get post by id
 const getPostById = async (id) => {
   const result = await pool.query(
     'SELECT p.*, u.username as author_name FROM posts p JOIN users u ON p.author_id = u.id WHERE p.id = $1',
@@ -59,7 +56,7 @@ const deletePost = async (id) => {
   await pool.query('DELETE FROM posts WHERE id = $1', [id]);
 };
 
-module.exports = {
+export {
   getAllPosts,
   getPostById,
   createPost,
