@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   testEnvironment: 'node',
   setupFilesAfterEnv: [],
   testMatch: ['**/tests/**/*.test.js'],
@@ -8,5 +8,6 @@ module.exports = {
     '!src/app.js'
   ],
   coverageDirectory: 'coverage',
-  verbose: true
+  verbose: true,
+  transform: {}
 };
