@@ -9,27 +9,20 @@ import postRoutes from './routes/posts.js';
 import commentRoutes from './routes/comments.js';
 import searchRoutes from './routes/search.js';
 
-// Initialize express app
 const app = express();
 
-// Set security HTTP headers
 app.use(helmet());
 
-// Enable CORS for all origins (in production, you might want to restrict this)
 app.use(cors());
 
-// Body parser, reading data from body into req.body
-app.use(express.json({ limit: '10kb' })); // Limit JSON payload size
+app.use(express.json({ limit: '10kb' })); 
 
-// Serving static files (uploads)
 app.use(express.static('uploads'));
 
-// Development logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// Apply global rate limiter to all requests
 app.use(apiLimiter);
 
 // Routes
@@ -38,7 +31,21 @@ app.use('/api/posts', postRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/search', searchRoutes);
 
-// Health check endpoint
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'success',
+    message: 'Welcome to the Blog API',
+    version: '1.0.0',
+    endpoints: {
+      auth: '/api/auth',
+      posts: '/api/posts',
+      comments: '/api/comments',
+      search: '/api/search',
+      health: '/health'
+    }
+  });
+});
+
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'success',
@@ -47,7 +54,6 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Handle undefined routes - catch all non-API requests
 app.use((req, res) => {
   res.status(404).json({
     status: 'error',
@@ -55,7 +61,6 @@ app.use((req, res) => {
   });
 });
 
-// Global error handling middleware
 app.use(errorHandler);
 
 export default app;

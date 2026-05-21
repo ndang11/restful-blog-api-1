@@ -5,7 +5,6 @@ const server = app.listen(env.port, () => {
   console.log(`Server running on port ${env.port} in ${env.env} mode`);
 });
 
-// Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
   console.log('UNHANDLED REJECTION! 💥 Shutting down...');
   console.log(err.name, err.message);
