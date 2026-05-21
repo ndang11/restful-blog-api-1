@@ -68,7 +68,7 @@ Create a `.env` file based on `.env.example`:
 Edit `.env` with your PostgreSQL credentials:
 
 ```
-PORT=3000
+PORT=5000
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=your_username
