@@ -1,11 +1,7 @@
-import { Pool } from 'pg';
 import fs from 'node:fs';
-import path from 'node:path';
-export { runSql, runSqlFile };
+import pool from '../../src/config/db.js';
 
-
-const runSql = async (sql, connectionString) => {
-  const pool = new Pool({ connectionString });
+const runSql = async (sql) => {
   let client;
   try {
     client = await pool.connect();
@@ -14,14 +10,13 @@ const runSql = async (sql, connectionString) => {
     if (client) {
       client.release();
     }
-    await pool.end();
   }
 };
 
-const runSqlFile = async (filePath, connectionString) => {
+const runSqlFile = async (filePath) => {
   try {
     const sql = fs.readFileSync(filePath, 'utf8');
-    await runSql(sql, connectionString);
+    await runSql(sql);
     console.log(`✅ Executed ${filePath}`);
   } catch (err) {
     console.error(`❌ Error executing ${filePath}:`, err.message);

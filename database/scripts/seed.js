@@ -1,15 +1,6 @@
-import { Pool } from 'pg';
 import fs from 'fs';
 import path from 'path';
-import env from '../../src/config/env.js';
-
-const pool = new Pool({
-  host: env.dbHost,
-  port: env.dbPort,
-  user: env.dbUser,
-  password: env.dbPassword,
-  database: env.dbName,
-});
+import pool from '../../src/config/db.js';
 
 const runSqlFile = async (filePath) => {
   try {

@@ -1,16 +1,6 @@
-import { Pool } from 'pg';
 import fs from 'fs';
 import path from 'path';
-import dotenv from 'dotenv';
-import env from '../../src/config/env.js';
-
-const pool = new Pool({
-  host: env.dbHost,
-  port: env.dbPort,
-  user: env.dbUser,
-  password: env.dbPassword,
-  database: env.dbName,
-});
+import pool from '../../src/config/db.js';
 
 const runSqlFile = async (filePath) => {
   try {
@@ -29,7 +19,6 @@ const setupDatabase = async () => {
     client = await pool.connect();
     console.log('🔧 Setting up database...');
     await runSqlFile(path.join(path.dirname('.'), 'database', 'schema.sql'));
-    await runSqlFile(path.join(path.dirname('.'), 'database', 'seed.sql'));
     console.log('🎉 Database setup completed successfully!');
   } catch (err) {
     console.error('💥 Database setup failed:', err.message);

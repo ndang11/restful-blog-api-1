@@ -1,12 +1,7 @@
-
--- Drop tables if they exist (for clean setup)
-DROP TABLE IF EXISTS refresh_tokens;
-DROP TABLE IF EXISTS comments;
-DROP TABLE IF EXISTS posts;
-DROP TABLE IF EXISTS users;
+-- Create tables if they do not exist (safe for production deploys)
 
 -- Users table
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -16,7 +11,7 @@ CREATE TABLE users (
 );
 
 -- Posts table
-CREATE TABLE posts (
+CREATE TABLE IF NOT EXISTS posts (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     content TEXT NOT NULL,
@@ -26,7 +21,7 @@ CREATE TABLE posts (
 );
 
 -- Comments table
-CREATE TABLE comments (
+CREATE TABLE IF NOT EXISTS comments (
     id SERIAL PRIMARY KEY,
     content TEXT NOT NULL,
     author_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
@@ -36,7 +31,7 @@ CREATE TABLE comments (
 );
 
 -- Refresh tokens table (for token rotation)
-CREATE TABLE refresh_tokens (
+CREATE TABLE IF NOT EXISTS refresh_tokens (
     id SERIAL PRIMARY KEY,
     token VARCHAR(255) UNIQUE NOT NULL,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
@@ -44,10 +39,10 @@ CREATE TABLE refresh_tokens (
     expires_at TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
--- Indexes for better query performance
-CREATE INDEX idx_posts_author_id ON posts(author_id);
-CREATE INDEX idx_posts_created_at ON posts(created_at);
-CREATE INDEX idx_comments_post_id ON comments(post_id);
-CREATE INDEX idx_comments_author_id ON comments(author_id);
-CREATE INDEX idx_refresh_tokens_user_id ON refresh_tokens(user_id);
-CREATE INDEX idx_refresh_tokens_token ON refresh_tokens(token);
+-- Indexes for better query performance (IF NOT EXISTS requires PostgreSQL 9.5+)
+CREATE INDEX IF NOT EXISTS idx_posts_author_id ON posts(author_id);
+CREATE INDEX IF NOT EXISTS idx_posts_created_at ON posts(created_at);
+CREATE INDEX IF NOT EXISTS idx_comments_post_id ON comments(post_id);
+CREATE INDEX IF NOT EXISTS idx_comments_author_id ON comments(author_id);
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user_id ON refresh_tokens(user_id);
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_token ON refresh_tokens(token);

@@ -86,9 +86,9 @@ const updatePost = async (req, res, next) => {
       "UPDATE posts SET title = $1, content = $2, updated_at = NOW() WHERE id = $3 AND author_id = $4 RETURNING *",
       [title, content, id, req.user.id],
     );
-      if (result.rows.length === 0) {
-     throw new AppError('Post not found or unauthorized', 404);
-   }
+    if (result.rows.length === 0) {
+      throw new AppError("Post not found or unauthorized", 404);
+    }
 
     res.status(200).json({
       status: "success",
@@ -105,13 +105,13 @@ const deletePost = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-        const deleteResult = await pool.query(
-      'DELETE FROM posts WHERE id = $1 AND author_id = $2 RETURNING id',
-      [id, req.user.id]
+    const deleteResult = await pool.query(
+      "DELETE FROM posts WHERE id = $1 AND author_id = $2 RETURNING id",
+      [id, req.user.id],
     );
-   if (deleteResult.rows.length === 0) {
-       throw new AppError('Post not found or unauthorized', 404);
-     }
+    if (deleteResult.rows.length === 0) {
+      throw new AppError("Post not found or unauthorized", 404);
+    }
 
     res.status(204).send();
   } catch (err) {
