@@ -4,7 +4,7 @@
   "description": "A RESTful Blog API with authentication, posts, and comments",
   "main": "src/server.js",
   "scripts": {
-    "start": "node database/scripts/teardown.js && node database/scripts/create.js && node src/server.js",
+    "start": "node database/scripts/create.js && node src/server.js",
     "dev": "nodemon src/server.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles --forceExit",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
